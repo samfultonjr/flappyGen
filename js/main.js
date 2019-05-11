@@ -66,7 +66,9 @@ $(document).ready(function() {
       highscore = parseInt(savedscore);
    
    //start with the splash screen
-   showSplash();
+   // showSplash();
+  
+   startGame()
 });
 
 function getCookie(cname)
@@ -123,8 +125,13 @@ function startGame()
    currentstate = states.GameScreen;
    
    //fade out the splash
-   $("#splash").stop();
-   $("#splash").transition({ opacity: 0 }, 500, 'ease');
+   if($('#splash')){
+      $("#splash").stop();
+      $("#splash").transition({ opacity: 0 }, 500, 'ease');
+   }else{
+      // console.log("no splash");
+   }
+ 
    
    //update the big score
    setBigScore();
@@ -348,10 +355,10 @@ function setMedal()
 
 function playerDead()
 {
-   
-   //stop animating everything!
-   // $(".animated").css('animation-play-state', 'paused');
-   // $(".animated").css('-webkit-animation-play-state', 'paused');
+   window.location.reload()
+   // stop animating everything!
+   $(".animated").css('animation-play-state', 'paused');
+   $(".animated").css('-webkit-animation-play-state', 'paused');
    
    //drop the bird to the floor
    var playerbottom = $("#player").position().top + $("#player").width(); //we use width because he'll be rotated 90 deg
@@ -369,6 +376,9 @@ function playerDead()
    loopPipeloop = null;
 
    //mobile browsers don't support buzz bindOnce event
+   // startGame()
+   // return
+   
    if(isIncompatible.any())
    {
       //skip right to showing score
