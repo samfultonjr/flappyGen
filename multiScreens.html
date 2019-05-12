@@ -7,11 +7,80 @@
     <title>Document</title>
 </head>
 <body bgcolor="#4EC0CA">
+    <h1 id="highscore" style="color:#FFF;">Highscore</h1>
     <iframe  src="./index.html" frameborder="0" width="354px" height="535px"></iframe>
-    <iframe src="./index.html" frameborder="0" width="354px" height="535px"></iframe>
-    <iframe src="./index.html" frameborder="0" width="354px" height="535px"></iframe>
+    <iframe  src="./index.html" frameborder="0" width="354px" height="535px"></iframe>
+    <iframe  src="./index.html" frameborder="0" width="354px" height="535px"></iframe>
+    <iframe  src="./index.html" frameborder="0" width="354px" height="535px"></iframe>
+    <button id="clear">Clear Brains</button>
+    <button id="random">Random</button>
+    
+   
 
+<script>
+    async function updateHighscore(){
+        while(true){
+           
+            try{
+            document.getElementById("highscore").textContent = "Highscore: " + await localStorage.getItem('highscore')
+            }catch(err){
+                document.getElementById("highscore").textContent =  "Highscore: 0"
+            }
+            await sleep(5000); 
+        }
+    }
+    updateHighscore()
 
+    function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+    async function checker(){
+        let jdnfjd = await localStorage.getItem("isRandom")
+    if(jdnfjd === "true"){
+        document.getElementById('random').textContent = "UnRandom"
+    }
+    }
+ checker()
+    let iframes = document.querySelectorAll('iframe')
+    for (let index = 0; index < iframes.length; index++) {
+        const iframe = iframes[index];
+        iframe.width = (document.body.clientWidth / iframes.length + 1 )-5 + "px"
+    }
+// document.getElementById('1').width = (document.body.clientWidth / 2)-5 + "px"
+// document.getElementById('2').width = (document.body.clientWidth / 2)-5 + "px"
+// document.getElementById('1').height = (document.body.clientHeight)-5 + "px"
+// document.getElementById('2').height = (document.body.clientHeight)-5 + "px"
+
+document.getElementById('random').addEventListener('click', random)
+
+async function random(){
+    let current
+    try{ current = await localStorage.getItem("isRandom")
+}catch(err){
+     current = false
+}
+console.log("Current", current)
+    if(current !== "true"){
+        console.log("set to true");
+        await localStorage.setItem('isRandom', true);
+        document.getElementById('random').textContent = "UnRandom"
+    }else{
+        console.log("set to false");
+        await localStorage.setItem('isRandom', false);
+        document.getElementById('random').textContent = "Random"
+    }
+    
+}
+
+document.getElementById('clear').addEventListener('click', clearLocal)
+async function clearLocal(){
+   await localStorage.clear()
+   window.location.reload()
+   console.log("cleared");
+}
+
+</script>
 
 </body>
 </html>

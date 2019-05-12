@@ -15,6 +15,7 @@
    limitations under the License.
 */
 
+
 var debugmode = false;
 
 var states = Object.freeze({
@@ -25,8 +26,8 @@ var states = Object.freeze({
 
 var currentstate;
 
-var gravity = 0.25;
-var velocity = 0;
+var gravity = .5;
+var velocity = 1;
 var position = 180;
 var rotation = 0;
 var jump = -4.6;
@@ -43,11 +44,11 @@ var replayclickable = false;
 
 //sounds
 var volume = 30;
-var soundJump = new buzz.sound("assets/sounds/sfx_wing.ogg");
-var soundScore = new buzz.sound("assets/sounds/sfx_point.ogg");
-var soundHit = new buzz.sound("assets/sounds/sfx_hit.ogg");
-var soundDie = new buzz.sound("assets/sounds/sfx_die.ogg");
-var soundSwoosh = new buzz.sound("assets/sounds/sfx_swooshing.ogg");
+// var soundJump = new buzz.sound("assets/sounds/sfx_wing.ogg");
+// var soundScore = new buzz.sound("assets/sounds/sfx_point.ogg");
+// var soundHit = new buzz.sound("assets/sounds/sfx_hit.ogg");
+// var soundDie = new buzz.sound("assets/sounds/sfx_die.ogg");
+// var soundSwoosh = new buzz.sound("assets/sounds/sfx_swooshing.ogg");
 buzz.all().setVolume(volume);
 
 //loops
@@ -105,8 +106,8 @@ function showSplash()
    $("#player").css({ y: 0, x: 0});
    updatePlayer($("#player"));
    
-   soundSwoosh.stop();
-   soundSwoosh.play();
+   // soundSwoosh.stop();
+   // soundSwoosh.play();
    
    //clear out all the pipes if there are any
    $(".pipe").remove();
@@ -145,7 +146,7 @@ function startGame()
 
    //start up our loops
    updatePipes()
-   var updaterate = 1000.0 / 60.0 ; //60 times a second
+   var updaterate = 1000/60; //60 times a second
    loopGameloop = setInterval(gameloop, updaterate);
    loopPipeloop = setInterval(updatePipes, 1400);
    
@@ -292,8 +293,8 @@ function playerJump()
 {
    velocity = jump;
    //play jump sound
-   soundJump.stop();
-   soundJump.play();
+   // soundJump.stop();
+   // soundJump.play();
 }
 
 function setBigScore(erase)
@@ -353,8 +354,16 @@ function setMedal()
    return true;
 }
 
-function playerDead()
+async function playerDead()
 {
+   let highscore = await localStorage.getItem("highscore")
+   if(score> highscore ){
+      await model.save('localstorage://my-model');
+      await localStorage.setItem('highscore', score)
+      console.log("New model saved");
+      console.log("New highscore", score)
+   }
+   
    window.location.reload()
    // stop animating everything!
    $(".animated").css('animation-play-state', 'paused');
@@ -387,11 +396,11 @@ function playerDead()
    else
    {
       //play the hit sound (then the dead sound) and then show score
-      soundHit.play().bindOnce("ended", function() {
-         soundDie.play().bindOnce("ended", function() {
-            showScore();
-         });
-      });
+      // soundHit.play().bindOnce("ended", function() {
+      //    soundDie.play().bindOnce("ended", function() {
+      //       showScore();
+      //    });
+      // });
    }
 }
 
@@ -418,16 +427,16 @@ function showScore()
    var wonmedal = setMedal();
    
    //SWOOSH!
-   soundSwoosh.stop();
-   soundSwoosh.play();
+   // soundSwoosh.stop();
+   // soundSwoosh.play();
    
    //show the scoreboard
    $("#scoreboard").css({ y: '40px', opacity: 0 }); //move it down so we can slide it up
    $("#replay").css({ y: '40px', opacity: 0 });
    $("#scoreboard").transition({ y: '0px', opacity: 1}, 600, 'ease', function() {
       //When the animation is done, animate in the replay button and SWOOSH!
-      soundSwoosh.stop();
-      soundSwoosh.play();
+      // soundSwoosh.stop();
+      // soundSwoosh.play();
       $("#replay").transition({ y: '0px', opacity: 1}, 600, 'ease');
       
       //also animate in the MEDAL! WOO!
@@ -449,8 +458,8 @@ $("#replay").click(function() {
    else
       replayclickable = false;
    //SWOOSH!
-   soundSwoosh.stop();
-   soundSwoosh.play();
+   // soundSwoosh.stop();
+   // soundSwoosh.play();
    
    //fade out the scoreboard
    $("#scoreboard").transition({ y: '-40px', opacity: 0}, 1000, 'ease', function() {
@@ -466,8 +475,8 @@ function playerScore()
 {
    score += 1;
    //play score sound
-   soundScore.stop();
-   soundScore.play();
+   // soundScore.stop();
+   // soundScore.play();
    setBigScore();
 }
 
@@ -479,11 +488,17 @@ function updatePipes()
    //add a new pipe (top height + bottom height  + pipeheight == flyArea) and put it in our tracker
    var padding = 80;
    var constraint = flyArea - pipeheight - (padding * 2); //double padding (for top and bottom)
-   var topheight = Math.floor((Math.random()*constraint) + padding); //add lower padding
+   var topheight = Math.floor((Math.random()*constraint) + padding) ; //add lower padding
    var bottomheight = (flyArea - pipeheight) - topheight;
    var newpipe = $('<div id="pipeBoy" class="pipe animated"><div class="pipe_upper" style="height: ' + topheight + 'px;"></div><div class="pipe_lower" style="height: ' + bottomheight + 'px;"></div></div>');
    $("#flyarea").append(newpipe);
    pipes.push(newpipe);
+   //   // change pipe top
+   //   closestPipe.children[0].style.height = parseInt(closestPipe.children[0].style.height.replace("px", "")) -50 + "px"
+
+   //   //change pipe bottom
+   //   closestPipe.children[1].style.height = parseInt(closestPipe.children[1].style.height.replace("px", "") ) + 50 + "px"
+
 }
 
 var isIncompatible = {

@@ -1,11 +1,34 @@
 let bestModel = undefined;
+let model
 async function collect() {
   let previousDistance = 0;
   let amount = 0;
 
   // make model
-  const model = await newNet();
+  // const model = await newNet();
+  // await model.save('localstorage://my-model');
+  let isRandom
+  try{
+     isRandom = await localStorage.getItem('isRandom');
+  }catch(err){
+     isRandom = false
+  }
+  console.log(isRandom)
+  if(isRandom === true || isRandom === "true"){
+    model = await newNet();
+  }else{
+    try{
+      model = await tf.loadLayersModel('localstorage://my-model');
+     }catch(err){
+       model = await newNet();
+     }
+   
+     await mutate(model)
+   
+  }
 
+
+   
   // await model.compile({})
 
   // console.log(await model.getWeights()[0].data())
@@ -15,6 +38,7 @@ async function collect() {
   // debugger
 
   while (true) {
+    
     const visiblePipes = document.querySelectorAll("div.pipe");
 
     if (visiblePipes.length > 0) {
@@ -27,13 +51,19 @@ async function collect() {
       //    console.log(bird);
 
       let closestPipe = visiblePipes[0];
-
+      closestPipe 
       // Gets closest pipe
 
       const pipePos = closestPipe.getBoundingClientRect();
       const pipeX = pipePos.right;
 
       //   console.log(closestPipe.attributes);
+      // // change pipe top
+      // closestPipe.children[0].style.height = parseInt(closestPipe.children[0].style.height.replace("px", "")) -50 + "px"
+
+      // //change pipe bottom
+      // closestPipe.children[1].style.height = parseInt(closestPipe.children[1].style.height.replace("px", "") ) + 50 + "px"
+
       const pipeTop = parseInt(
         closestPipe.children[0].style.height.replace("px", "")
       );
@@ -54,6 +84,7 @@ async function collect() {
       // if(gameObjs.length === 100){
       //   console.log(gameObjs);
       // }
+      // console.log(score)
       // console.log(birdTop)
       if (birdTop < 5) {
         playerDead();
@@ -110,10 +141,25 @@ function removeElement(elementId) {
 }
 
 async function mutate(model) {
-  const weights = await model.getWeights()[0].data()
-  console.log("Current weights")
-  console.log(weights);
-  debugger
+  console.log("mutated");
+  // let preWeights = (await model.getWeights()[0].data())
+  const weightBox = await model.getWeights()
+  for (let index = 0; index < weightBox.length; index++) {
+    const weights = await weightBox[index].data();
+    
+    for (let index2 = 0; index2 < weights.length; index2++) {
+      let weight = weights[index2];
+      let maybe = Math.floor(Math.random() * weights.length); 
+      if(maybe === 3){
+        weight = (Math.random() * 1) - 1; 
+        (await model.getWeights()[index].data())[index2] = weight
+      }
+     
+      
+      let did = (await model.getWeights()[index].data())[index2]
+    }
+  }
+  console.log((await weightBox[0].data()))
 
   // weight = weight * (1 + (random() * 0.2 - 0.1));
 }
