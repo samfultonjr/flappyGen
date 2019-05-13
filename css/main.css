@@ -15,6 +15,16 @@
    limitations under the License.
 */
 
+@font-face {
+   font-family: 'flappyFont';
+   src:  url('./flappybirdy/FlappyBirdy.ttf') format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+ }  
+
+h1.flapFont
+{
+   font-family: 'flappyFont', sans-serif;
+}
+
 @-webkit-keyframes animLand {
    0% { background-position: 0px 0px; }
    100% { background-position: -335px 0px; }
@@ -125,7 +135,7 @@ body
 {
    height: 100%;
    overflow: hidden;
-   font-family: monospace;
+   font-family: 'flappyFont';
    font-size: 12px;
    color: #fff;
 }
@@ -389,3 +399,5 @@ Screen - Game
    text-decoration: none;
    color: #fff;
 }
+
+

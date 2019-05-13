@@ -7,24 +7,45 @@
     <title>Flappy AI</title>
 </head>
 <body bgcolor="#4EC0CA">
-    <h1 id="highscore" style="color:#FFF;">Highscore</h1>
+    <h1 id="highscore" style="color:#FFF; font-family:flappybird;"  >56565</h1>
+    <h2 id="usingRandom">Using random networks</h2>
     <iframe  src="./flappyFrame.html" frameborder="0" width="354px" height="535px"></iframe>
     <iframe  src="./flappyFrame.html" frameborder="0" width="354px" height="535px"></iframe>
     <iframe  src="./flappyFrame.html" frameborder="0" width="354px" height="535px"></iframe>
     <iframe  src="./flappyFrame.html" frameborder="0" width="354px" height="535px"></iframe>
     <iframe  src="./flappyFrame.html" frameborder="0" width="354px" height="535px"></iframe>
     
-    <button id="clear">Clear Brains</button>
-    <button id="random">Random</button>
-    
+    <button id="clear">Reset</button>
+    <!-- <button id="add">Add Agent</button> -->
    
 
 <script>
+    // document.getElementById("add").addEventListener("click", addAgent);
+    // async function addAgent(){
+    //     console.log("Creating new agent")
+    //    let newFrame =  document.createElement('iframe');
+    //    newFrame.src ="./flappyFrame.html"
+    //    newFrame.frameborder="0"
+    //    newFrame.width="354px"
+    //    newFrame.height="535px"
+    //    let frame = document.querySelector("iframe").cloneNode( true );
+    //    frame.id= "NEWFRAME"
+    //   document.querySelector("iframe").append(frame)
+    //   let iframes = document.querySelectorAll('iframe')
+    // for (let index = 0; index < iframes.length; index++) {
+    //     const iframe = iframes[index];
+    //     iframe.width = (document.body.clientWidth / iframes.length + 1 )-5 + "px"
+    // }
+    // }
     async function updateHighscore(){
         while(true){
            
             try{
-            document.getElementById("highscore").textContent = "Highscore: " + await localStorage.getItem('highscore')
+                let currentScore = await localStorage.getItem('highscore')
+            document.getElementById("highscore").textContent = "Highscore: " + currentScore
+            if(currentScore > 5){
+                document.getElementById("usingRandom").textContent = ""
+            }
             }catch(err){
                 document.getElementById("highscore").textContent =  "Highscore: 0"
             }
@@ -37,13 +58,7 @@
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-    async function checker(){
-        let jdnfjd = await localStorage.getItem("isRandom")
-    if(jdnfjd === "true"){
-        document.getElementById('random').textContent = "UnRandom"
-    }
-    }
- checker()
+
     let iframes = document.querySelectorAll('iframe')
     for (let index = 0; index < iframes.length; index++) {
         const iframe = iframes[index];
@@ -54,7 +69,6 @@
 // document.getElementById('1').height = (document.body.clientHeight)-5 + "px"
 // document.getElementById('2').height = (document.body.clientHeight)-5 + "px"
 
-document.getElementById('random').addEventListener('click', random)
 
 async function random(){
     let current

@@ -7,6 +7,7 @@ async function collect() {
   // make model
   // const model = await newNet();
   // await model.save('localstorage://my-model');
+  console.log( tf.memory())
   let isRandom
   try{
      isRandom = await localStorage.getItem('highscore');
@@ -14,7 +15,7 @@ async function collect() {
      isRandom = "null"
   }
   // console.log(isRandom)
-  if(isRandom === "null" || isRandom === null){
+  if(isRandom === "null" || isRandom === null || isRandom < 5){
     model = await newNet();
     console.log("Created random net");
   }else{
@@ -27,7 +28,7 @@ async function collect() {
      await mutate(model)
    
   }
-
+  console.log( tf.memory())
 
    
   // await model.compile({})
@@ -101,16 +102,22 @@ async function collect() {
       const gameObjV2 = { input: gameObj, output: { jump: 1 } };
 
       //  console.log(gameObj)
-      const inputs = tf.tensor2d([
-        [
-          gameObj.distance,
-          gameObj.birdTop,
-          gameObj.pipeTop,
-          gameObj.pipeBottom,
-          gameObj.pipeMiddle
-        ]
-      ]);
-      let jump = await model.predict(inputs);
+      
+      const jump = tf.tidy( () => { 
+        let inputs = tf.tensor2d([
+          [
+            gameObj.distance,
+            gameObj.birdTop,
+            gameObj.pipeTop,
+            gameObj.pipeBottom,
+            gameObj.pipeMiddle
+          ]
+        ])
+        let result =  model.predict(inputs);
+        return result
+        
+      })
+      
       let choices = jump.dataSync();
       // console.log(choices)
       if (choices[0] > choices[1]) {
