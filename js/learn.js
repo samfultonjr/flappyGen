@@ -9,13 +9,14 @@ async function collect() {
   // await model.save('localstorage://my-model');
   let isRandom
   try{
-     isRandom = await localStorage.getItem('isRandom');
+     isRandom = await localStorage.getItem('highscore');
   }catch(err){
-     isRandom = false
+     isRandom = "null"
   }
-  console.log(isRandom)
-  if(isRandom === true || isRandom === "true"){
+  // console.log(isRandom)
+  if(isRandom === "null" || isRandom === null){
     model = await newNet();
+    console.log("Created random net");
   }else{
     try{
       model = await tf.loadLayersModel('localstorage://my-model');
@@ -141,7 +142,7 @@ function removeElement(elementId) {
 }
 
 async function mutate(model) {
-  console.log("mutated");
+  // console.log("mutated");
   // let preWeights = (await model.getWeights()[0].data())
   const weightBox = await model.getWeights()
   for (let index = 0; index < weightBox.length; index++) {
@@ -159,7 +160,7 @@ async function mutate(model) {
       let did = (await model.getWeights()[index].data())[index2]
     }
   }
-  console.log((await weightBox[0].data()))
+  // console.log((await weightBox[0].data()))
 
   // weight = weight * (1 + (random() * 0.2 - 0.1));
 }
