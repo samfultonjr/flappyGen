@@ -8,6 +8,7 @@
 </head>
 <body bgcolor="#4EC0CA">
     <h1 id="highscore" style="color:#FFF; font-family:flappybird;"  >56565</h1>
+    <h2 id="playTime">Time Played: 0 seconds</h2>
     <h2 id="usingRandom">Using random networks until score reaches 5. It might take a little while to get to 5 in some cases, but once it does it will evolve rapidly.</h2>
     <iframe  src="./flappyFrame.html" frameborder="0" width="354px" height="535px"></iframe>
     <iframe  src="./flappyFrame.html" frameborder="0" width="354px" height="535px"></iframe>
@@ -20,6 +21,31 @@
    
 
 <script>
+    let startTime = Date.now()
+    async function updateTime(){
+        while(true){
+            await sleep(1000);
+            let timeSince = Date.now() - startTime
+            let secondsSince = timeSince / 1000
+            let minutesSince = secondsSince / 60
+            let stringMins = toString(minutesSince);
+            debugger
+            let leftSecs = 0
+            if(stringMins.includes(".")){
+                stringMins = stringMins.split(".")[1]
+                leftSecs = Math.floor(stringMins * 60)
+            }
+           
+            console.log(timeSince, secondsSince, minutesSince)
+            if(minutesSince< 1){
+                document.getElementById("playTime").textContent = "Time Played: "+ Math.floor(secondsSince)+ " seconds"
+            }else{
+                document.getElementById("playTime").textContent = "Time Played: "+ Math.floor(minutesSince)+ ":" + leftSecs
+            }
+           
+}
+    }
+   updateTime()
     // document.getElementById("add").addEventListener("click", addAgent);
     // async function addAgent(){
     //     console.log("Creating new agent")
@@ -49,7 +75,7 @@
             }catch(err){
                 document.getElementById("highscore").textContent =  "Highscore: 0"
             }
-            await sleep(5000); 
+            await sleep(1000); 
         }
     }
     updateHighscore()
@@ -76,13 +102,13 @@ async function random(){
 }catch(err){
      current = false
 }
-console.log("Current", current)
+// console.log("Current", current)
     if(current !== "true"){
-        console.log("set to true");
+        // console.log("set to true");
         await localStorage.setItem('isRandom', true);
         document.getElementById('random').textContent = "UnRandom"
     }else{
-        console.log("set to false");
+        // console.log("set to false");
         await localStorage.setItem('isRandom', false);
         document.getElementById('random').textContent = "Random"
     }
@@ -93,7 +119,7 @@ document.getElementById('clear').addEventListener('click', clearLocal)
 async function clearLocal(){
    await localStorage.clear()
    window.location.reload()
-   console.log("cleared");
+//    console.log("cleared");
 }
 
 </script>

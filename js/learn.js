@@ -7,7 +7,7 @@ async function collect() {
   // make model
   // const model = await newNet();
   // await model.save('localstorage://my-model');
-  console.log( tf.memory())
+  // console.log( tf.memory())
   let isRandom
   try{
      isRandom = await localStorage.getItem('highscore');
@@ -17,7 +17,7 @@ async function collect() {
   // console.log(isRandom)
   if(isRandom === "null" || isRandom === null || isRandom < 5){
     model = await newNet();
-    console.log("Created random net");
+
   }else{
     try{
       model = await tf.loadLayersModel('localstorage://my-model');
@@ -28,7 +28,7 @@ async function collect() {
      await mutate(model)
    
   }
-  console.log( tf.memory())
+  // console.log( tf.memory())
 
    
   // await model.compile({})
