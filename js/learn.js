@@ -15,7 +15,7 @@ async function collect() {
      isRandom = "null"
   }
   // console.log(isRandom)
-  if(isRandom === "null" || isRandom === null || isRandom < 3){
+  if(isRandom === "null" || isRandom === null || isRandom < 2){
     model = await newNet();
 
   }else{
