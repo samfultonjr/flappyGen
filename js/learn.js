@@ -149,27 +149,32 @@ function removeElement(elementId) {
 }
 
 async function mutate(model) {
-  // console.log("mutated");
-  // let preWeights = (await model.getWeights()[0].data())
-  const weightBox = await model.getWeights()
-  for (let index = 0; index < weightBox.length; index++) {
-    const weights = await weightBox[index].data();
-    
-    for (let index2 = 0; index2 < weights.length; index2++) {
-      let weight = weights[index2];
-      let maybe = Math.floor(Math.random() * weights.length); 
-      if(maybe === 3){
-        weight = (Math.random() * 1) - 1; 
-        (await model.getWeights()[index].data())[index2] = weight
+     const weightBox = await model.getWeights()
+    for (let index = 0; index < weightBox.length; index++) {
+      const weights = await weightBox[index].data();
+      let all0 = false;
+      if(weights[0] === 0){ 
+         all0 = true;
+        for (let index3 = 0; index3 < weights.length; index3++) {
+          let weight = weights[index3];
+          if(weight !== 0){all0 = false}
+        }
       }
-     
-      
-      let did = (await model.getWeights()[index].data())[index2]
+      if(all0 === false){
+        let selectedNeuron = Math.floor(Math.random() * weights.length);
+        weightChange = (Math.random() * .1) - .1;
+        let isNegative = Math.floor((Math.random() * 2) + 1);
+        if(isNegative === 2){
+          weightChange = weightChange * -1
+        }
+      //   console.log("Mutated weight by", weightChange*100+"%")
+        let currentWeight = (await model.getWeights()[index].data())[selectedNeuron]
+        let newWeight = currentWeight + (currentWeight*weightChange);
+        (await model.getWeights()[index].data())[selectedNeuron] = newWeight
+         // let confirmNew = (await model.getWeights()[index].data())[selectedNeuron]
+      }
+        
     }
-  }
-  // console.log((await weightBox[0].data()))
-
-  // weight = weight * (1 + (random() * 0.2 - 0.1));
 }
 
 
